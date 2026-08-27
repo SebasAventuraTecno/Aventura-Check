@@ -2981,3 +2981,42 @@ a:focus-visible {
     min-width: 0 !important;
   }
 }
+/* =========================================================
+   FIX DEFINITIVO iPHONE - FECHA Y HORA
+   ========================================================= */
+@media (max-width: 680px) {
+
+  .form-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow: hidden;
+  }
+
+  .form-grid > label {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow: hidden;
+  }
+
+  #dateInput,
+  #timeInput,
+  #endDateInput,
+  #editDateInput,
+  #editTimeInput,
+  #editEndDateInput {
+    display: block !important;
+
+    width: -webkit-fill-available !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    margin: 0 !important;
+    box-sizing: border-box !important;
+
+    -webkit-appearance: none;
+    appearance: none;
+  }
+}
