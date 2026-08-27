@@ -2952,3 +2952,32 @@ a:focus-visible {
     margin-right: 0 !important;
   }
 }
+/* FIX iPHONE - campos del formulario dentro de la tarjeta */
+@media (max-width: 680px) {
+
+  .activity-form,
+  .activity-form label,
+  .form-grid,
+  .form-grid > label {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .activity-form input,
+  .activity-form select,
+  .activity-form textarea {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  input[type="date"],
+  input[type="time"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+}
