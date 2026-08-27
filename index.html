@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0b5d52" />
+    <meta name="description" content="Agenda inteligente para organizar giras, proyectos y actividades." />
+    <title>Aventura Check</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="stylesheet" href="./styles.css?v=mobile-full-2">
+  </head>
+  <body>
+    <header class="topbar">
+  <a class="brand" href="#home" data-home-link aria-label="Ir al inicio de Aventura Check">
+    <img class="brand-logo" src="./assets/Logo-AC.png" alt="Aventura Check">
+    <span>
+      <strong>Aventura Check</strong>
+    </span>
+  </a>
+
+      <nav class="main-nav" aria-label="Secciones principales">
+        <button class="nav-button active" type="button" data-target="addActivity">Agregar</button>
+        <button class="nav-button" type="button" data-target="calendarSection">Calendario</button>
+        <button class="nav-button" type="button" data-target="agendaSection">Actividades</button>
+      </nav>
+
+      <div class="topbar-actions">
+        <button class="icon-button" id="installButton" type="button" hidden title="Instalar aplicacion" aria-label="Instalar aplicacion">+</button>
+        <button class="account-button" id="accountButton" type="button" aria-haspopup="dialog" aria-controls="authDialog">
+          <span class="account-avatar" aria-hidden="true">
+            <span id="accountAvatarFallback">?</span>
+            <img id="accountAvatarImage" alt="" referrerpolicy="no-referrer" hidden />
+          </span>
+          <span class="account-copy">
+            <strong id="accountName">Ingresar</strong>
+            <small id="accountEmail">Cuenta de Google</small>
+          </span>
+        </button>
+      </div>
+    </header>
+
+    <section class="brand-banner" id="home" aria-labelledby="appTitle">
+      <div class="brand-banner-content">
+       <h1 id="heroGreeting">Aventura Check</h1>
+        <p class="banner-date" id="heroDateLabel"></p>
+        <div class="route-summary" aria-label="Resumen de actividades">
+          <span><strong id="heroTodayCount">0</strong> Para hoy</span>
+          <span><strong id="heroTripCount">0</strong> Giras activas</span>
+        </div>
+      </div>
+    </section>
+
+    <main class="app-shell content-box">
+  <section class="quick-entry page-section" id="addActivity" aria-labelledby="quickTitle">
+    <div class="section-heading">
+      <div>
+        <h2 id="quickTitle">Agregar actividad</h2>
+      </div>
+      <span class="today" id="todayLabel"></span>
+    </div>
+
+    <form id="activityForm" class="activity-form">
+      <label>
+        ¿Que hay por hacer?
+        <input id="titleInput" name="title" type="text" />
+      </label>
+
+      <div class="form-grid">
+        <label>
+          Tipo
+          <select id="typeInput" name="type">
+            <option value="proyecto">Proyecto</option>
+            <option value="tarea">Tarea</option>
+            <option value="gira">Gira</option>
+            <option value="reunion">Examen</option>
+        
+            <option value="personal">Personal</option>
+          </select>
+        </label>
+
+        <label>
+          Prioridad
+          <select id="priorityInput" name="priority">
+            <option value="media">Media</option>
+            <option value="alta">Alta</option>
+            <option value="baja">Baja</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="form-grid">
+        <label>
+          <span id="dateLabel">Fecha</span>
+          <input id="dateInput" name="date" type="date" required />
+        </label>
+
+        <label>
+          Hora
+          <input id="timeInput" name="time" type="time" />
+        </label>
+      </div>
+
+      <label class="end-date-field" id="endDateField" hidden>
+        Fecha de salida
+        <input id="endDateInput" name="endDate" type="date" />
+      </label>
+
+      <label>
+        Curso / referencia
+        <input id="courseInput" name="course" type="text" placeholder="Curso, cliente, proyecto o grupo" />
+      </label>
+
+      <label>
+        Recordatorio
+        <select id="reminderInput" name="reminder">
+          <option value="sin">Sin recordatorio</option>
+          <option value="mismo-dia">El mismo dia</option>
+          <option value="1-dia">1 dia antes</option>
+          <option value="3-dias">3 dias antes</option>
+        </select>
+      </label>
+
+      <label>
+        Notas
+        <textarea id="notesInput" name="notes" rows="3" placeholder="Materiales, detalles o pendientes importantes"></textarea>
+      </label>
+
+      <div class="form-actions">
+        <button class="secondary-button" id="cancelEditButton" type="button" hidden>Cancelar</button>
+        <button class="primary-button" id="saveActivityButton" type="submit">Guardar actividad</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="calendar-panel page-section" id="calendarSection" aria-labelledby="calendarTitle">
+    <div class="section-heading">
+      <div>
+        
+        <h2 id="calendarTitle"> </h2>
+      </div>
+    </div>
+
+    <div class="calendar-card">
+      <div class="calendar-monthbar">
+        <button class="month-button" id="previousMonth" type="button" title="Mes anterior">&lt;</button>
+        <strong id="monthLabel"></strong>
+        <button class="month-button" id="nextMonth" type="button" title="Mes siguiente">&gt;</button>
+      </div>
+
+      <div class="calendar-weekdays" aria-hidden="true">
+        <span>Lun</span>
+        <span>Mar</span>
+        <span>Mie</span>
+        <span>Jue</span>
+        <span>Vie</span>
+        <span>Sab</span>
+        <span>Dom</span>
+      </div>
+
+      <div class="calendar-grid" id="calendarGrid"></div>
+    </div>
+
+    <div class="calendar-legend" aria-label="Tipos de actividad">
+      <span><b class="legend-dot proyecto"></b>Proyecto</span>
+      <span><b class="legend-dot tarea"></b>Tarea</span>
+      <span><b class="legend-dot gira"></b>Gira</span>
+      <span><b class="legend-dot reunion"></b>Examen</span>
+    </div>
+  </section>
+
+  <section class="agenda-panel page-section is-hidden" id="agendaSection" aria-labelledby="agendaTitle">
+    <div class="section-heading">
+      <div>
+        <h2 id="agendaTitle" class="center-title">Proximas actividades</h2>
+      </div>
+      <strong id="activityCount">0</strong>
+    </div>
+
+    <div class="activity-dashboard" aria-label="Resumen de actividades">
+      <article>
+        <span>Hoy</span>
+        <strong id="dashboardToday">0</strong>
+      </article>
+      <article>
+        <span>Pendientes</span>
+        <strong id="dashboardPending">0</strong>
+      </article>
+      <article>
+        <span>Giras activas</span>
+        <strong id="dashboardTrips">0</strong>
+      </article>
+      <article>
+        <span>Completadas</span>
+        <strong id="dashboardDone">0</strong>
+      </article>
+    </div>
+
+    <div class="activity-tools" aria-label="Herramientas de actividades">
+      <label class="search-field">
+        <span>Buscar</span>
+        <input id="activitySearchInput" type="search" placeholder="Nombre, nota, tipo o fecha" autocomplete="off" />
+      </label>
+      <button class="export-button" id="exportActivitiesButton" type="button">Exportar CSV</button>
+    </div>
+
+    <div class="filters center" aria-label="Filtros">
+      <button class="filter-button active" type="button" data-filter="todas">Todas</button>
+      <button class="filter-button" type="button" data-filter="hoy">Hoy</button>
+      <button class="filter-button" type="button" data-filter="semana">Proximos 7 dias</button>
+      <button class="filter-button" type="button" data-filter="pendiente">Pendientes</button>
+      <button class="filter-button" type="button" data-filter="en proceso">En proceso</button>
+      <button class="filter-button" type="button" data-filter="completada">Completadas</button>
+      <button class="filter-button" type="button" data-filter="gira">Giras</button>
+      <button class="filter-button" type="button" data-filter="tarea">Tareas</button>
+      <button class="filter-button" type="button" data-filter="reunion">Examenes</button>
+      <button class="filter-button" type="button" data-filter="personal">Personal</button>
+    </div>
+
+    <div class="activity-list" id="activityList"></div>
+  </section>
+</main>
+
+    <dialog class="activity-dialog" id="activityDialog" aria-labelledby="activityDialogTitle">
+      <div class="dialog-shell">
+        <header class="dialog-header">
+          <div>
+            <p class="dialog-type" id="activityDialogType"></p>
+            <h2 id="activityDialogTitle"></h2>
+          </div>
+          <button class="dialog-close" id="closeActivityDialog" type="button" aria-label="Cerrar detalle" title="Cerrar">
+            &times;
+          </button>
+        </header>
+
+        <p class="dialog-date" id="activityDialogDate"></p>
+
+        <div class="dialog-details">
+          <div>
+            <span>Hora</span>
+            <strong id="activityDialogTime"></strong>
+          </div>
+          <div>
+            <span>Prioridad</span>
+            <strong id="activityDialogPriority"></strong>
+          </div>
+          <div>
+            <span>Estado</span>
+            <strong id="activityDialogStatus"></strong>
+          </div>
+          <div>
+            <span>Curso / referencia</span>
+            <strong id="activityDialogCourse"></strong>
+          </div>
+          <div>
+            <span>Recordatorio</span>
+            <strong id="activityDialogReminder"></strong>
+          </div>
+        </div>
+
+        <section class="dialog-notes" aria-labelledby="activityDialogNotesLabel">
+          <h3 id="activityDialogNotesLabel">Descripcion</h3>
+          <p id="activityDialogNotes"></p>
+        </section>
+
+        <div class="dialog-actions">
+          <button class="edit-button" id="editActivityButton" type="button">Editar</button>
+          <button class="delete-button" id="deleteActivityButton" type="button">Eliminar</button>
+          <button class="secondary-button" id="doneActivityDialog" type="button">Cerrar</button>
+        </div>
+      </div>
+    </dialog>
+<dialog class="activity-dialog" id="editActivityDialog" aria-labelledby="editActivityTitle">
+  <form class="dialog-shell" id="editActivityForm">
+    <header class="dialog-header">
+      <div>
+        <p class="dialog-type">Editar actividad</p>
+        <h2 id="editActivityTitle">Modificar datos</h2>
+      </div>
+      <button class="dialog-close" id="closeEditActivityDialog" type="button" aria-label="Cerrar">&times;</button>
+    </header>
+
+    <label>
+      Titulo
+      <input id="editTitleInput" name="title" type="text" required />
+    </label>
+
+    <div class="form-grid">
+      <label>
+        Tipo
+        <select id="editTypeInput" name="type">
+          <option value="proyecto">Proyecto</option>
+          <option value="tarea">Tarea</option>
+          <option value="gira">Gira</option>
+          <option value="reunion">Examen</option>
+          
+          <option value="personal">Personal</option>
+        </select>
+      </label>
+
+      <label>
+        Prioridad
+        <select id="editPriorityInput" name="priority">
+          <option value="media">Media</option>
+          <option value="alta">Alta</option>
+          <option value="baja">Baja</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="form-grid">
+      <label>
+        <span id="editDateLabel">Fecha</span>
+        <input id="editDateInput" name="date" type="date" required />
+      </label>
+
+      <label>
+        Hora
+        <input id="editTimeInput" name="time" type="time" />
+      </label>
+    </div>
+
+    <label class="end-date-field" id="editEndDateField" hidden>
+      Fecha de salida
+      <input id="editEndDateInput" name="endDate" type="date" />
+    </label>
+
+    <label>
+      Curso / referencia
+      <input id="editCourseInput" name="course" type="text" placeholder="Curso, cliente, proyecto o grupo" />
+    </label>
+
+    <label>
+      Recordatorio
+      <select id="editReminderInput" name="reminder">
+        <option value="sin">Sin recordatorio</option>
+        <option value="mismo-dia">El mismo dia</option>
+        <option value="1-dia">1 dia antes</option>
+        <option value="3-dias">3 dias antes</option>
+      </select>
+    </label>
+
+    <label>
+      Notas
+      <textarea id="editNotesInput" name="notes" rows="4"></textarea>
+    </label>
+
+    <div class="dialog-actions">
+      <button class="secondary-button" id="cancelEditModalButton" type="button">Cancelar</button>
+      <button class="primary-button" type="submit">Guardar cambios</button>
+    </div>
+  </form>
+</dialog>
+    <dialog class="auth-dialog" id="authDialog" aria-labelledby="authDialogTitle">
+      <div class="auth-shell">
+        <header class="auth-header">
+          <div>
+            <p class="eyebrow">Cuenta personal</p>
+            <h2 id="authDialogTitle">Acceso a Aventura Check</h2>
+          </div>
+          <button class="dialog-close" id="closeAuthDialog" type="button" aria-label="Cerrar acceso" title="Cerrar">
+            &times;
+          </button>
+        </header>
+
+        <section class="auth-signed-out" id="authSignedOut">
+          <div class="auth-mark" aria-hidden="true">AC</div>
+          <div>
+            <h3>Continua con tu cuenta</h3>
+            <p>Tu primer ingreso crea automaticamente tu usuario.</p>
+          </div>
+          <button class="google-button" id="googleSignInButton" type="button">
+            <span aria-hidden="true">G</span>
+            Ingresar con Google
+          </button>
+          <p class="auth-status" id="authStatus" role="status"></p>
+        </section>
+
+        <section class="auth-signed-in" id="authSignedIn" hidden>
+          <div class="auth-profile">
+            <span class="auth-profile-avatar" aria-hidden="true">
+              <span id="authProfileFallback">U</span>
+              <img id="authProfileImage" alt="" referrerpolicy="no-referrer" hidden />
+            </span>
+            <div>
+              <h3 id="authProfileName"></h3>
+              <p id="authProfileEmail"></p>
+            </div>
+          </div>
+          <p class="auth-storage-note">Las actividades de esta cuenta se mantienen separadas en este dispositivo.</p>
+          <button class="secondary-button" id="signOutButton" type="button">Cerrar sesion</button>
+        </section>
+      </div>
+    </dialog>
+
+    <template id="emptyStateTemplate">
+      <div class="empty-state">
+        <h3>No hay actividades todavia</h3>
+        <p>Agrega la primera actividad desde el formulario rapido.</p>
+      </div>
+    </template>
+
+   <script type="module" src="./app.js?v=campos-pro-2"></script>
+  </body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "name": "Aventura Check",
+  "short_name": "Aventura",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#edf2f0",
+  "theme_color": "#0b5d52",
+  "description": "Agenda inteligente para organizar giras, proyectos y actividades.",
+  "icons": []
+}
