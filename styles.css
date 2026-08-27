@@ -2695,82 +2695,112 @@ a:focus-visible {
   }
 }
 
-/* Correccion movil: calendario legible, no aplastado */
+/* =========================================================
+   MOVIL - Calendario completo sin scroll horizontal
+========================================================= */
 @media (max-width: 680px) {
+
   .calendar-panel {
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
     overflow: hidden;
   }
 
   .calendar-card {
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-  }
-
-  .calendar-card::after {
-    display: none;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+    overflow-y: visible;
   }
 
   .calendar-monthbar,
   .calendar-weekdays,
   .calendar-grid {
-    min-width: 620px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
   }
 
+  /* Mes y botones */
   .calendar-monthbar {
-    grid-template-columns: 48px 1fr 48px;
-    min-height: 56px;
+    grid-template-columns: 42px minmax(0, 1fr) 42px;
+    min-height: 48px;
   }
 
   .month-button {
-    height: 56px;
-    font-size: 1.35rem;
+    width: 42px;
+    height: 48px;
+    font-size: 1.1rem;
   }
 
   .calendar-monthbar strong {
-    font-size: 1.02rem;
+    min-width: 0;
+    font-size: 0.88rem;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Los 7 dias SIEMPRE entran en pantalla */
+  .calendar-weekdays,
+  .calendar-grid {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
   }
 
   .calendar-weekdays {
-    min-height: 32px;
-    font-size: 0.62rem;
+    min-height: 30px;
+    font-size: 0.52rem;
   }
 
+  .calendar-weekdays span {
+    min-width: 0;
+    padding: 0 1px;
+    text-align: center;
+  }
+
+  /* Celdas */
   .calendar-day {
-    grid-template-rows: 25px 1fr;
-    min-height: 88px;
-    padding: 5px;
+    min-width: 0;
+    min-height: 72px;
+    grid-template-rows: 20px 1fr;
+    padding: 3px 2px;
   }
 
   .calendar-day-number {
-    font-size: 0.86rem;
+    font-size: 0.72rem;
   }
 
   .today-cell .calendar-day-number {
-    width: 28px;
-    height: 25px;
+    width: 22px;
+    height: 20px;
+  }
+
+  /* Actividades dentro del calendario */
+  .calendar-items {
+    min-width: 0;
+    width: 100%;
+    overflow: hidden;
+    gap: 2px;
   }
 
   .calendar-item {
-    min-height: 19px;
-    padding: 3px 5px;
-    font-size: 0.58rem;
-    line-height: 1.15;
+    width: 100%;
+    min-width: 0;
+    min-height: 15px;
+    padding: 2px;
+    font-size: 0.45rem;
+    line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  .calendar-legend {
-    padding: 0 2px;
-  }
-
+  /* Ya no hace falta decir que se deslice */
   .calendar-panel::after {
-    display: block;
-    margin-top: 8px;
-    color: #687875;
-    font-size: 0.72rem;
-    font-weight: 800;
-    text-align: center;
-    content: "Desliza el calendario hacia los lados";
+    display: none;
+    content: none;
   }
 }
