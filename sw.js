@@ -1,4 +1,4 @@
-const CACHE_NAME = "aventura-check-v16";
+const CACHE_NAME = "aventura-check-v17";
 const APP_FILES = [
   "./",
   "./index.html",

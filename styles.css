@@ -3020,3 +3020,20 @@ a:focus-visible {
     appearance: none;
   }
 }
+/* FIX REAL iPHONE - evitar que Fecha y Hora se salgan */
+@media (max-width: 680px) {
+  #dateInput,
+  #timeInput,
+  #endDateInput,
+  #editDateInput,
+  #editTimeInput,
+  #editEndDateInput {
+    display: block !important;
+    width: calc(100% - 14px) !important;
+    max-width: calc(100% - 14px) !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    justify-self: start !important;
+    margin-right: 14px !important;
+  }
+}
