@@ -3037,3 +3037,28 @@ a:focus-visible {
     margin-right: 14px !important;
   }
 }
+/* =========================================================
+   MOVIL - TODOS LOS CAMPOS CON EL MISMO ANCHO
+   ========================================================= */
+@media (max-width: 680px) {
+
+  .activity-form input,
+  .activity-form select,
+  .activity-form textarea,
+  #dateInput,
+  #timeInput,
+  #endDateInput,
+  #editDateInput,
+  #editTimeInput,
+  #editEndDateInput {
+    display: block !important;
+    width: calc(100% - 14px) !important;
+    max-width: calc(100% - 14px) !important;
+    min-width: 0 !important;
+
+    margin-left: auto !important;
+    margin-right: auto !important;
+
+    box-sizing: border-box !important;
+  }
+}
