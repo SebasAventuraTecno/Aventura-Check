@@ -7,14 +7,10 @@
   "theme_color": "#0b6b5a",
   "icons": [
     {
-      "src": "./assets/apple-touch-icon.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "./assets/apple-touch-icon.png",
-      "sizes": "512x512",
-      "type": "image/png"
+      "src": "./assets/Logo-AC.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }
