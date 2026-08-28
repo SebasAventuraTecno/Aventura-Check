@@ -3062,3 +3062,120 @@ a:focus-visible {
     box-sizing: border-box !important;
   }
 }
+/* =========================================================
+   VISTAS PRINCIPALES
+   ========================================================= */
+
+.app-shell[data-view="calendarSection"] {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-areas: "calendar" !important;
+}
+
+.app-shell[data-view="calendarSection"] .calendar-panel {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+.app-shell[data-view="addActivity"] {
+  display: grid !important;
+  grid-template-columns: minmax(0, 620px) !important;
+  grid-template-areas: "entry" !important;
+  justify-content: center;
+}
+
+.app-shell[data-view="agendaSection"] {
+  display: block !important;
+}
+/* =========================================================
+   VISTA INICIO - FORMULARIO + CALENDARIO
+   ========================================================= */
+
+@media (min-width: 681px) {
+  .app-shell[data-view="home"] {
+    display: grid !important;
+
+    grid-template-columns:
+      minmax(300px, 370px)
+      minmax(0, 1fr) !important;
+
+    grid-template-areas:
+      "entry calendar" !important;
+
+    gap: 26px !important;
+
+    max-width: 1180px !important;
+    width: 100% !important;
+
+    margin: 22px auto 0 !important;
+    padding: 0 18px 36px !important;
+
+    align-items: start;
+  }
+
+  .app-shell[data-view="home"] .quick-entry {
+    grid-area: entry !important;
+    width: 100% !important;
+  }
+
+  .app-shell[data-view="home"] .calendar-panel {
+    grid-area: calendar !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    margin: 0 !important;
+  }
+
+  .app-shell[data-view="home"] .calendar-card {
+    width: 100% !important;
+  }
+}
+/* =========================================================
+   ACTIVIDADES DEL CALENDARIO - ETIQUETAS LEGIBLES
+   ========================================================= */
+
+.calendar-item {
+  border: 1px solid !important;
+  border-radius: 6px !important;
+  font-weight: 800 !important;
+  text-align: left !important;
+  padding: 4px 6px !important;
+  box-shadow: none !important;
+}
+
+/* Proyecto */
+.calendar-item.proyecto {
+  background: #e5f5f2 !important;
+  color: #08766d !important;
+  border-color: #49a99f !important;
+}
+
+/* Tarea */
+.calendar-item.tarea {
+  background: #f0f6df !important;
+  color: #587722 !important;
+  border-color: #86a947 !important;
+}
+
+/* Gira */
+.calendar-item.gira {
+  background: #fff4df !important;
+  color: #c86d0d !important;
+  border-color: #e9a441 !important;
+}
+
+/* Examen / reunión */
+.calendar-item.reunion {
+  background: #fff0f0 !important;
+  color: #bd4141 !important;
+  border-color: #df7777 !important;
+}
+
+/* Personal */
+.calendar-item.personal {
+  background: #f1edf8 !important;
+  color: #705b8d !important;
+  border-color: #9b89b6 !important;
+}

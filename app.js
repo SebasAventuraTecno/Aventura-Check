@@ -56,6 +56,13 @@ const calendarGrid = document.querySelector("#calendarGrid");
 const monthLabel = document.querySelector("#monthLabel");
 const previousMonth = document.querySelector("#previousMonth");
 const nextMonth = document.querySelector("#nextMonth");
+const calendarCreateDialog = document.querySelector("#calendarCreateDialog");
+const calendarCreateForm = document.querySelector("#calendarCreateForm");
+const closeCalendarCreateDialog = document.querySelector("#closeCalendarCreateDialog");
+const cancelCalendarCreateDialog = document.querySelector("#cancelCalendarCreateDialog");
+const calendarCreateDateLabel = document.querySelector("#calendarCreateDateLabel");
+const calendarCreateDateInput = document.querySelector("#calendarCreateDateInput");
+const calendarCreateTitleInput = document.querySelector("#calendarCreateTitleInput");
 const activityDialog = document.querySelector("#activityDialog");
 const closeActivityDialog = document.querySelector("#closeActivityDialog");
 const activityDialogType = document.querySelector("#activityDialogType");
@@ -173,46 +180,65 @@ cancelEditButton.addEventListener("click", () => {
 navButtons.forEach((button) => {
   button.addEventListener("click", () => {
     const targetId = button.dataset.target;
-    const target = document.querySelector(`#${targetId}`);
-    if (!target) return;
 
     const addSection = document.querySelector("#addActivity");
     const calendarSection = document.querySelector("#calendarSection");
     const agendaSection = document.querySelector("#agendaSection");
+    const appShell = document.querySelector(".app-shell");
 
-    if (targetId === "agendaSection") {
-      addSection.classList.add("is-hidden");
-      calendarSection.classList.add("is-hidden");
-      agendaSection.classList.remove("is-hidden");
-    } else {
+    if (!addSection || !calendarSection || !agendaSection) return;
+
+    // Ocultar todo primero
+    addSection.classList.add("is-hidden");
+    calendarSection.classList.add("is-hidden");
+    agendaSection.classList.add("is-hidden");
+
+    // Mostrar solamente la sección seleccionada
+    if (targetId === "addActivity") {
       addSection.classList.remove("is-hidden");
-      calendarSection.classList.remove("is-hidden");
-      agendaSection.classList.add("is-hidden");
     }
 
+    if (targetId === "calendarSection") {
+      calendarSection.classList.remove("is-hidden");
+    }
+
+    if (targetId === "agendaSection") {
+      agendaSection.classList.remove("is-hidden");
+    }
+
+    // Nos permite acomodar correctamente el layout
+    appShell.dataset.view = targetId;
+
     setActiveNav(targetId);
-    target.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    document.querySelector(`#${targetId}`)?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   });
 });
 homeLink?.addEventListener("click", () => {
   const addSection = document.querySelector("#addActivity");
   const calendarSection = document.querySelector("#calendarSection");
   const agendaSection = document.querySelector("#agendaSection");
+  const appShell = document.querySelector(".app-shell");
 
-  if (!addSection || !calendarSection || !agendaSection) return;
+  if (!addSection || !calendarSection || !agendaSection || !appShell) return;
 
+  // Vista de inicio:
+  // formulario a la izquierda + calendario grande a la derecha
   addSection.classList.remove("is-hidden");
   calendarSection.classList.remove("is-hidden");
   agendaSection.classList.add("is-hidden");
 
+  // IMPORTANTE: quitar la configuración de las vistas individuales
+  appShell.dataset.view = "home";
+
   setActiveNav("addActivity");
-});
-filterButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    currentFilter = button.dataset.filter;
-    filterButtons.forEach((item) => item.classList.remove("active"));
-    button.classList.add("active");
-    renderActivities();
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
   });
 });
 
@@ -261,13 +287,112 @@ nextMonth.addEventListener("click", () => {
 });
 
 calendarGrid.addEventListener("click", (event) => {
+  // 1. Si tocamos una actividad que ya existe
   const calendarItem = event.target.closest("[data-activity-id]");
-  if (!calendarItem) return;
 
-  const activity = activities.find((item) => item.id === calendarItem.dataset.activityId);
-  if (activity) openActivityDialog(activity);
+  if (calendarItem) {
+    const activity = activities.find(
+      (item) => item.id === calendarItem.dataset.activityId
+    );
+
+    if (activity) {
+      openActivityDialog(activity);
+    }
+
+    return;
+  }
+
+  // 2. Si tocamos un día vacío del calendario
+  const dayCell = event.target.closest(".calendar-day");
+
+  if (!dayCell || !dayCell.dataset.date) return;
+
+  openCalendarCreateDialog(dayCell.dataset.date);
+});
+function openCalendarCreateDialog(dateISO) {
+  calendarCreateForm.reset();
+
+  // Guardamos la fecha que el usuario tocó
+  calendarCreateDateInput.value = dateISO;
+
+  // Mostramos la fecha bonita
+  const selectedDate = parseISODate(dateISO);
+
+  calendarCreateDateLabel.textContent = capitalize(
+    new Intl.DateTimeFormat("es-CR", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }).format(selectedDate)
+  );
+
+  calendarCreateDialog.showModal();
+
+  setTimeout(() => {
+    calendarCreateTitleInput.focus();
+  }, 100);
+}
+
+
+// Guardar actividad creada desde el calendario
+calendarCreateForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const data = new FormData(calendarCreateForm);
+
+  const title = String(data.get("title") || "").trim();
+  const date = String(data.get("date") || "");
+  const type = String(data.get("type") || "tarea");
+
+  if (!title || !date) return;
+
+  activities.push({
+    id: crypto.randomUUID(),
+    title,
+    type,
+    priority: String(data.get("priority") || "media"),
+    date,
+
+    // Si luego queremos una gira de varios días,
+    // se podrá editar desde los detalles.
+    endDate: "",
+
+    time: String(data.get("time") || ""),
+    course: String(data.get("course") || "").trim(),
+    reminder: String(data.get("reminder") || "sin"),
+    notes: String(data.get("notes") || "").trim(),
+
+    status: "pendiente",
+    createdAt: new Date().toISOString(),
+  });
+
+  saveActivities();
+  renderApp();
+
+  calendarCreateDialog.close();
+  calendarCreateForm.reset();
 });
 
+
+// Cerrar con la X
+closeCalendarCreateDialog.addEventListener("click", () => {
+  calendarCreateDialog.close();
+});
+
+
+// Cerrar con Cancelar
+cancelCalendarCreateDialog.addEventListener("click", () => {
+  calendarCreateDialog.close();
+});
+
+
+// Cerrar tocando fuera de la ventana
+calendarCreateDialog.addEventListener("click", (event) => {
+  if (event.target === calendarCreateDialog) {
+    calendarCreateDialog.close();
+  }
+});
 closeActivityDialog.addEventListener("click", () => activityDialog.close());
 doneActivityDialog.addEventListener("click", () => activityDialog.close());
 
@@ -630,15 +755,23 @@ function renderCalendar() {
       .filter((activity) => isActivityOnDate(activity, cellDateISO))
       .sort((a, b) => `${a.time || "23:59"}${a.title}`.localeCompare(`${b.time || "23:59"}${b.title}`));
 
-    const cell = document.createElement("article");
-    cell.className = `calendar-day${isCurrentMonth ? "" : " muted"}${cellDateISO === todayISO ? " today-cell" : ""}${dayActivities.length ? " has-items" : ""}`;
-    cell.innerHTML = `
-      <div class="calendar-day-number">${cellDate.getDate()}</div>
-      <div class="calendar-items">
-        ${dayActivities.map((activity) => renderCalendarItem(activity, cellDateISO)).join("")}
-      </div>
-    `;
-    calendarGrid.append(cell);
+ const cell = document.createElement("article");
+
+cell.className = `calendar-day${isCurrentMonth ? "" : " muted"}${cellDateISO === todayISO ? " today-cell" : ""}${dayActivities.length ? " has-items" : ""}`;
+
+cell.dataset.date = cellDateISO;
+
+cell.innerHTML = `
+  <div class="calendar-day-number">${cellDate.getDate()}</div>
+
+  <div class="calendar-items">
+    ${dayActivities
+      .map((activity) => renderCalendarItem(activity, cellDateISO))
+      .join("")}
+  </div>
+`;
+
+calendarGrid.append(cell);
   }
 }
 
@@ -765,18 +898,57 @@ function getActivitySearchText(activity) {
 
 function renderCalendarItem(activity, date) {
   const startsToday = activity.date === date;
-  const endsToday = activity.endDate === date && activity.endDate !== activity.date;
-  const isTrip = activity.type === "gira" && activity.endDate && activity.endDate !== activity.date;
-  const label = startsToday && activity.time ? `${activity.time} ${activity.title}` : activity.title;
-  const className = `calendar-item ${activity.type} ${activity.priority}${activity.status === "completada" ? " done" : ""}`;
-  const prefix = isTrip && startsToday ? "Entrada: " : isTrip && endsToday ? "Salida: " : isTrip ? "Gira: " : "";
+  const endsToday =
+    activity.endDate === date &&
+    activity.endDate !== activity.date;
+
+  const isTrip =
+    activity.type === "gira" &&
+    activity.endDate &&
+    activity.endDate !== activity.date;
+
+  const typeLabels = {
+    proyecto: "Proyecto",
+    tarea: "Tarea",
+    gira: "Gira",
+    reunion: "Examen",
+    universidad: "Universidad",
+    personal: "Personal",
+  };
+
+  const typeLabel = typeLabels[activity.type] || "Actividad";
+
+  const activityLabel =
+    startsToday && activity.time
+      ? `${activity.time} ${activity.title}`
+      : activity.title;
+
+  let prefix = `${typeLabel}: `;
+
+  // Las giras de varios días conservan Entrada / Gira / Salida
+  if (isTrip) {
+    if (startsToday) {
+      prefix = "Entrada: ";
+    } else if (endsToday) {
+      prefix = "Salida: ";
+    } else {
+      prefix = "Gira: ";
+    }
+  }
+
+  const className =
+    `calendar-item ${activity.type} ${activity.priority}` +
+    `${activity.status === "completada" ? " done" : ""}`;
+
   return `
     <button
       class="${className}"
       type="button"
       data-activity-id="${escapeHTML(activity.id)}"
-      title="Ver detalles de ${escapeHTML(activity.title)}"
-    >${escapeHTML(prefix + label)}</button>
+      title="${escapeHTML(typeLabel)}: ${escapeHTML(activity.title)}"
+    >
+      ${escapeHTML(prefix + activityLabel)}
+    </button>
   `;
 }
 

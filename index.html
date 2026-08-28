@@ -404,7 +404,120 @@
         <p>Agrega la primera actividad desde el formulario rapido.</p>
       </div>
     </template>
+<dialog
+  class="activity-dialog"
+  id="calendarCreateDialog"
+  aria-labelledby="calendarCreateTitle"
+>
+  <form class="dialog-shell" id="calendarCreateForm">
 
+    <header class="dialog-header">
+      <div>
+        <p class="dialog-type">Nueva actividad</p>
+        <h2 id="calendarCreateTitle">Agregar al calendario</h2>
+      </div>
+
+      <button
+        class="dialog-close"
+        id="closeCalendarCreateDialog"
+        type="button"
+        aria-label="Cerrar"
+      >
+        &times;
+      </button>
+    </header>
+
+    <p class="dialog-date" id="calendarCreateDateLabel"></p>
+
+    <input
+      id="calendarCreateDateInput"
+      name="date"
+      type="hidden"
+    />
+
+    <label>
+      ¿Qué hay por hacer?
+      <input
+        id="calendarCreateTitleInput"
+        name="title"
+        type="text"
+        placeholder="Nombre de la actividad"
+        required
+      />
+    </label>
+
+    <label>
+      Tipo
+      <select name="type">
+        <option value="proyecto">Proyecto</option>
+        <option value="tarea">Tarea</option>
+        <option value="gira">Gira</option>
+        <option value="reunion">Examen</option>
+        <option value="personal">Personal</option>
+      </select>
+    </label>
+
+    <label>
+      Prioridad
+      <select name="priority">
+        <option value="media">Media</option>
+        <option value="alta">Alta</option>
+        <option value="baja">Baja</option>
+      </select>
+    </label>
+
+    <label>
+      Hora
+      <input name="time" type="time" />
+    </label>
+
+    <label>
+      Curso / referencia
+      <input
+        name="course"
+        type="text"
+        placeholder="Curso, proyecto, cliente..."
+      />
+    </label>
+
+    <label>
+      Recordatorio
+      <select name="reminder">
+        <option value="sin">Sin recordatorio</option>
+        <option value="mismo-dia">El mismo día</option>
+        <option value="1-dia">1 día antes</option>
+        <option value="3-dias">3 días antes</option>
+      </select>
+    </label>
+
+    <label>
+      Notas
+      <textarea
+        name="notes"
+        rows="3"
+        placeholder="Detalles importantes..."
+      ></textarea>
+    </label>
+
+    <div class="dialog-actions">
+      <button
+        class="secondary-button"
+        id="cancelCalendarCreateDialog"
+        type="button"
+      >
+        Cancelar
+      </button>
+
+      <button
+        class="primary-button"
+        type="submit"
+      >
+        Guardar actividad
+      </button>
+    </div>
+
+  </form>
+</dialog>
    <script type="module" src="./app.js?v=campos-pro-2"></script>
   </body>
 </html>
