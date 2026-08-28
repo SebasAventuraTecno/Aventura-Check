@@ -1,4 +1,4 @@
-const CACHE_NAME = "aventura-check-v17";
+const CACHE_NAME = "aventura-check-v18";
 const APP_FILES = [
   "./",
   "./index.html",
@@ -8,6 +8,7 @@ const APP_FILES = [
   "./firebase-config.js",
   "./manifest.webmanifest",
   "./assets/tourism-tech-header.png",
+  "./assets/Logo-AC.png",
 ];
 
 self.addEventListener("install", (event) => {
